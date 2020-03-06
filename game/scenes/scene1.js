@@ -27,8 +27,23 @@ class TitleScene extends Phaser.Scene{
         });
 
         this.load.image('rocket', 'assets/images/rocket.png');
+
+        this.load.spritesheet('ship', 'assets/sprites/shipsprite.png',{
+            frameWidth:1000, frameHeight:285
+        })
+
         this.load.image('boss', 'assets/images/bad_guy_boss.png');
         this.load.image('badguy', 'assets/images/bad_guy.png');
+
+        this.load.spritesheet('explosion', "assets/sprites/explosion.png",{
+            frameWidth:16, frameHeight:16
+        });
+
+        this.load.audio('beam-sound', 'assets/audio/canon_shoot.wav');
+        this.load.audio('hurt-sound', 'assets/audio/bad_guy_hurt.wav');
+        this.load.audio('upgrade-sound', 'assets/audio/upgrade.wav');
+
+        this.load.bitmapFont("pixelFont", "assets/fonts/font.png", "assets/fonts/font.xml");
 
     }
 
@@ -40,7 +55,7 @@ class TitleScene extends Phaser.Scene{
         this.otherbackground = this.add.tileSprite(0,0,config.width, config.height,"star-background");
         this.otherbackground.setOrigin(0,0);
         
-        this.add.image(config.width /2, config.height * 0.20, 'main-title');        
+        this.add.image(config.width /2, config.height * 0.20, 'main-title').setScale(1.8);        
         this.playbutton = this.add.image(config.width /2, config.height * 0.60, "play-button-yellow").setScale(0.3);
         this.optionbutton = this.add.image(config.width /2, config.height * 0.73, 'option-button-yellow').setScale(0.4);
 
@@ -75,6 +90,21 @@ class TitleScene extends Phaser.Scene{
             this.music.stop();
             this.scene.start("gamesceen");
 
+        });
+
+        this.anims.create({
+            key: "ship_anim",
+            frames: this.anims.generateFrameNumbers("ship"),
+            frameRate:20,
+            repeat:-1
+        });
+
+        this.anims.create({
+            key:"explode",
+            frames: this.anims.generateFrameNumbers("explosion"),
+            frameRate: 20,
+            repeat:0,
+            hideOnComplete:true
         });
     }
 
