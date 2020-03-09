@@ -1,4 +1,7 @@
-var settings = {};
+var settings = {
+    totalEnemies: 12,
+    shipSpeed:200,
+};
 
 
 var config = {

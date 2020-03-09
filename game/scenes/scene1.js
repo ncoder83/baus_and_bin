@@ -39,7 +39,11 @@ class TitleScene extends Phaser.Scene{
             frameWidth:16, frameHeight:16
         });
 
-        this.load.audio('beam-sound', 'assets/audio/canon_shoot.wav');
+        this.load.spritesheet('beam', 'assets/sprites/beam.png',{
+            frameWidth:66, frameHeight: 31
+        });
+
+        this.load.audio('beam-sound', 'assets/audio/beam.wav');
         this.load.audio('hurt-sound', 'assets/audio/bad_guy_hurt.wav');
         this.load.audio('upgrade-sound', 'assets/audio/upgrade.wav');
 
@@ -71,7 +75,7 @@ class TitleScene extends Phaser.Scene{
             delay: 0            
         };        
         // this.music.pauseOnBlur = false;
-        this.music.play(titleMusicConfig);
+        // this.music.play(titleMusicConfig);
         
 
         this.playbutton.setInteractive();
@@ -106,7 +110,16 @@ class TitleScene extends Phaser.Scene{
             repeat:0,
             hideOnComplete:true
         });
+
+        this.anims.create({
+            key:"beam_anim",
+            frames: this.anims.generateFrameNumbers("beam"),
+            frameRate: 20,
+            repeat: -1
+        })
     }
+
+   
 
     update(){
         this.background.tilePositionX += 0.05;
