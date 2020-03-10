@@ -1,6 +1,6 @@
 class GameScene extends Phaser.Scene{
     constructor(){
-        super("gamesceen")
+        super("gamescene")
     }
 
     create(){
@@ -18,15 +18,14 @@ class GameScene extends Phaser.Scene{
         this.ship.setScale(0.2);
         this.ship.setCollideWorldBounds(true);
         
-        this.badguy = this.add.image(config.width/2 + 20, config.height/2, "badguy") 
-        this.badguy.setOrigin(0,0);
-        this.badguy.setScale(0.2);
+        // this.badguy = this.add.sprite(config.width/2 + 20, this.randomY(), "enemy");        
+        // this.badguy.setScale(0.2);
+        // this.badguy.play("badguy_anim");
 
         this.enemies = this.physics.add.group();
-        // for(var i = 0; i < settings.totalEnemies; i++){
-        //     var enemy = this.physics.add.image(16)
-        // }
-        
+
+        this.createEnemies(3);
+                
         this.setupTitleScore();
       
         this.beamSound = this.sound.add("beam-sound");
@@ -40,8 +39,21 @@ class GameScene extends Phaser.Scene{
 
         this.projectiles  = this.add.group();
 
+        //when player bullets hit the enemy
         this.physics.add.overlap(this.projectiles, this.enemies, this.hitEnemy, null, this);
 
+        this.physics.add.overlap(this.ship, this.enemies, this.hurtPlayer, null, this);
+
+    }
+
+    createEnemies(count){
+        for(let i = 0; i < count; i++){
+            let badguy = this.add.sprite(config.width/2 + 20, this.randomY(), "enemy");        
+            badguy.setOrigin(0,0);
+            badguy.setScale(0.2);
+            badguy.play("badguy_anim");
+            this.enemies.add(badguy);
+        }
     }
 
     setupMainScore(){
@@ -81,28 +93,49 @@ class GameScene extends Phaser.Scene{
     hitEnemy(projectile, enemy){
         var explosion = new Explosion(this, enemy.x, enemy.y);
         projectile.destroy();
-        this.resetEnemeyPos(enemy);
+        this.resetEnemyPos(enemy);
         this.score += 15;
-        var scoreFormatted = this.zeroPad(this.score, 6);
+        var scoreFormatted = this.zeroPad(this.score, 8);
         this.scoreLabel.text = "SCORE " + scoreFormatted;
         this.hurtSound.play();
     }
 
-    resetEnemeyPos(enemy){
+    hurtPlayer(player, enemy){
+        this.resetEnemyPos(enemy);
+        
+        if(this.ship.alpha < 1)
+            return;
+        var explosion = new Explosion(this, player.x, player.y);
+        this.hurtSound.play();
+        player.disableBody(true,true);
+
+        this.time.addEvent({
+            delay:1000,
+            callback: this.resetPlayer,
+            callbackScope:this,
+            loop: false
+        });
+    }
+
+    resetEnemyPos(enemy){
         enemy.x = config.width;
-        var randomY = Phaser.Math.Between(0, config.height);
+        var randomY = this.randomY();
         enemy.y = randomY;
     }
 
+    randomY(){
+        return Phaser.Math.Between(0, config.height - 20);
+    }
+
     resetPlayer(){
-        var x = config.width + 64;
+        var x = 0;
         var y = config.height/2 - 8;
-        this.ship.enableBody(true,x,y,true,true);
+        this.ship.enableBody(true, x, y,true,true);
         this.ship.alpha = 0.5;
 
         var tween = this.tweens.add({
             targets: this.ship,
-            x: config.width - 64,
+            x: 64,
             ease:'Power1',
             duration: 1500,
             repeat:0,
@@ -116,7 +149,7 @@ class GameScene extends Phaser.Scene{
     moveEnemy(enemy, speed){
         enemy.x -= speed;
         if(enemy.x < 0)
-            this.resetShipPos(enemy);
+            this.resetEnemyPos(enemy);
     }
 
     moveShip(){
@@ -150,6 +183,12 @@ class GameScene extends Phaser.Scene{
     }
 
     update(){
+
+        for(let i = 0; i < this.enemies.getChildren().length; i++){
+            var enemy = this.enemies.getChildren()[i];
+            this.moveEnemy(enemy, Phaser.Math.Between(1,4));
+        }
+
         this.background.tilePositionX += 0.50;
         this.middleground.tilePositionX += 0.02;
 
@@ -165,7 +204,6 @@ class GameScene extends Phaser.Scene{
             var beam = this.projectiles.getChildren()[i];
             beam.update();
         }
-
     }
 
 }
