@@ -13,9 +13,7 @@ class GameScene extends Phaser.Scene{
         
 
         this.ship = this.physics.add.sprite(20, config.height/2, "ship");
-        this.ship.play("ship_anim");
-        this.ship.setOrigin(0,0);
-        this.ship.setScale(0.2);
+        this.ship.play("ship_anim");                
         this.ship.setCollideWorldBounds(true);
         
         // this.badguy = this.add.sprite(config.width/2 + 20, this.randomY(), "enemy");        
@@ -49,8 +47,7 @@ class GameScene extends Phaser.Scene{
     createEnemies(count){
         for(let i = 0; i < count; i++){
             let badguy = this.add.sprite(config.width/2 + 20, this.randomY(), "enemy");        
-            badguy.setOrigin(0,0);
-            badguy.setScale(0.2);
+                                    
             badguy.play("badguy_anim");
             this.enemies.add(badguy);
         }
@@ -204,6 +201,10 @@ class GameScene extends Phaser.Scene{
             var beam = this.projectiles.getChildren()[i];
             beam.update();
         }
+    }
+
+    render(){
+
     }
 
 }

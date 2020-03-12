@@ -37,11 +37,15 @@ class TitleScene extends Phaser.Scene{
 
     loadSpriteSheets(){
         this.load.spritesheet('ship', 'assets/sprites/shipsprite.png',{
-            frameWidth:1000, frameHeight:285
+            frameWidth:200, frameHeight:57
         });
 
-        this.load.spritesheet('enemy', 'assets/sprites/badguysprite.png',{
-            frameWidth:300, frameHeight:225
+        this.load.spritesheet('enemy', 'assets/sprites/badsprite1.png',{
+            frameWidth:61, frameHeight:45
+        });
+
+        this.load.spritesheet('enemy_level_2', 'assets/sprites/badsprite2.png',{
+            frameWidth:59, frameHeight: 45
         });
 
         this.load.spritesheet('explosion', 'assets/sprites/explosion.png',{
